@@ -1,0 +1,13 @@
+mat-card {
+  widows: 80%;
+  margin: auto;
+  border-radius: 1px;
+  border-color: darkblue;
+}
+textarea {
+  border-color: cyan;
+}
+
+button {
+  color: blue;
+}
