@@ -2,5 +2,9 @@
   <mat-expansion-panel *ngFor="let post of postsList">
     <mat-expansion-panel-header>{{ post.title }}</mat-expansion-panel-header>
     <p>{{ post.content }}</p>
+    <mat-action-row>
+      <button mat-button color="accent">Edit</button>
+      <button mat-button color="primary">Del</button>
+    </mat-action-row>
   </mat-expansion-panel>
 </mat-accordion>

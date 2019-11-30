@@ -22,5 +22,6 @@ export class PostCreateComponent {
     };
     //this.postCreatedEvent.emit(storedPost);  // when using service to pass around data , instead of event binding
     this.postService.addPosts(storedPost.title, storedPost.content);
+    form.resetForm();
   }
 }
