@@ -17,6 +17,7 @@ export class PostCreateComponent {
 
   onSavePost(form: NgForm) {
     const storedPost: Post = {
+      id: null,
       title: form.value.enteredTitle,
       content: form.value.enteredContent
     };
