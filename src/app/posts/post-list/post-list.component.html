@@ -4,7 +4,9 @@
     <p>{{ post.content }}</p>
     <mat-action-row>
       <button mat-button color="accent">Edit</button>
-      <button mat-button color="primary">Del</button>
+      <button mat-button color="primary" (click)="onDelete(post.id)">
+        Del
+      </button>
     </mat-action-row>
   </mat-expansion-panel>
 </mat-accordion>

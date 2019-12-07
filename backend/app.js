@@ -1,46 +1,66 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+
+const Post = require("./models/post");
+
 const app = express();
 
+mongoose
+  .connect(
+    "mongodb+srv://Saggnic:NCDaX1bdBroEc0yw@cluster0-s3qqu.mongodb.net/test?retryWrites=true&w=majority",
+    { useNewUrlParser: true, useUnifiedTopology: true } //keep updating the ip in the mongodb.com
+  )
+  .then(() => {
+    console.log("Connected to database!");
+  })
+  .catch(err => {
+    console.log(err);
+  });
+
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*"); //to enable CORS :Cross Origin Resource Sharing property since
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "Origin,X-Requested-With,Content-Type,Accept" // the incomming request may have these extra headerS
+    "Origin, X-Requested-With, Content-Type, Accept"
   );
   res.setHeader(
     "Access-Control-Allow-Methods",
-    "GET,POST,PATCH,DELETE,OPTIONS"
-  ); //OPTIONS is sent by browser prior to check if request is valid
+    "GET, POST, PATCH, DELETE, OPTIONS"
+  );
   next();
 });
 
-app.post("/api/posts", (req, res, next) => {
-  const post = req.body;
-  //console.log(post);
-  res.status(201).json({
-    message: "post creation done"
+app.post("/api/posts", (req, res) => {
+  const post = new Post({
+    title: req.body.title,
+    content: req.body.content
+  });
+  console.log(post);
+  post.save().then(createdPost => {
+    res.status(201).json({
+      message: "Post added successfully",
+      postId: createdPost._id
+    });
   });
 });
 
-app.use("/api/posts", (req, res, next) => {
-  const posts = [
-    {
-      id: "a",
-      title: "Default Post1",
-      content: "Post from Server"
-    },
-    {
-      id: "b",
-      title: "Default Post2",
-      content: "Post from Server"
-    }
-  ];
-  res.status(200).json({
-    message: "Post Fetched Successfully",
-    posts: posts
+app.get("/api/posts", (req, res) => {
+  Post.find().then(documents => {
+    res.status(200).json({
+      message: "Posts fetched successfully!",
+      posts: documents
+    });
+  });
+});
+
+app.delete("/api/posts/:id", (req, res) => {
+  Post.deleteOne({ _id: req.params.id }).then(result => {
+    console.log(result);
+    res.status(200).json({ message: "Post deleted!" });
   });
 });
 
