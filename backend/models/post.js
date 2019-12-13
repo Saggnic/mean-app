@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 
 const postSchema = mongoose.Schema({
-  //schema format like that in front end model
-  title: { type: String, required: true }, //in typescript :'string' but in NodeJs ans JS :'String'
-  content: { type: String, default: true }
+  title: { type: String, required: true },
+  content: { type: String, required: true },
+  imagePath: { type: String, required: true }
 });
 
 //now we convert the schema into model
