@@ -1,0 +1,13 @@
+mat-card {
+  widows: 80%;
+  margin: auto;
+  border-radius: 1px;
+  border-color: darkblue;
+}
+input {
+  border-color: cyan;
+}
+
+mat-spinner {
+  margin: auto;
+}
