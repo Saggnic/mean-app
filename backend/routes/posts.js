@@ -1,6 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 
+const checkAuth = require("../middleware/check-auth"); //always import without file extension
 const Post = require("../models/post");
 
 const router = express.Router();
@@ -32,6 +33,7 @@ const storage = multer.diskStorage({
 
 router.post(
   "",
+  checkAuth, //middleware added for authentication of jwt.......just like that
   multer({ storage: storage }).single("image"),
   (req, res, next) => {
     const url = req.protocol + "://" + req.get("host");
@@ -54,6 +56,7 @@ router.post(
 
 router.put(
   "/:id",
+  checkAuth, //not executing this function here just pssing the ref.....exporess with execute when code flow reaches it.
   multer({ storage: storage }).single("image"),
   (req, res, next) => {
     let imagePath = req.body.imagePath;
@@ -106,7 +109,7 @@ router.get("/:id", (req, res, next) => {
   });
 });
 
-router.delete("/:id", (req, res, next) => {
+router.delete("/:id", checkAuth, (req, res, next) => {
   Post.deleteOne({ _id: req.params.id }).then(result => {
     console.log(result);
     res.status(200).json({ message: "Post deleted!" });
