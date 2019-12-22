@@ -1,6 +1,15 @@
-<app-header></app-header>
 <main>
- <!-- <app-post-create (postCreatedEvent)="onStorePost($event)"></app-post-create>
+  <router-outlet></router-outlet>
+  <!-- <div
+    class="container"
+    [ngStyle]="{
+      'background-image': getUrl(),
+      height: '1400px',
+      width: '600px',
+
+      'background-size': 'contain'
+    }"
+  ></div> -->
+  <!-- <app-post-create (postCreatedEvent)="onStorePost($event)"></app-post-create>
   <app-post-list></app-post-list> -->
-  <router-outlet></router-outlet> 
 </main>

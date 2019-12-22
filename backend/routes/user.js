@@ -56,7 +56,8 @@ router.post("/login", (req, res, next) => {
       console.log(jwt);
       res.status(200).json({
         token: token,
-        message: "logged in"
+        message: "logged in",
+        expiresIn: 3600
       });
     })
     .catch(err => {

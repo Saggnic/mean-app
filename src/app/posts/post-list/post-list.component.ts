@@ -4,6 +4,8 @@ import { Subscription } from "rxjs";
 
 import { Post } from "../post.model";
 import { PostsService } from "../posts.service";
+import { AuthService } from "src/app/auth/auth.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-post-list",
@@ -23,18 +25,31 @@ export class PostListComponent implements OnInit, OnDestroy {
   currentPage = 1;
   pageSizeOptions = [1, 2, 5, 10];
   private postsSub: Subscription;
+  private authStatusSub: Subscription;
+  public userIsAuthenticated = false;
 
-  constructor(public postsService: PostsService) {}
+  constructor(
+    public postsService: PostsService,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.isLoading = true;
     this.postsService.getPosts(this.postsPerPage, this.currentPage);
     this.postsSub = this.postsService
       .getPostUpdateListener()
-      .subscribe((postData: {posts: Post[], postCount: number}) => {
+      .subscribe((postData: { posts: Post[]; postCount: number }) => {
         this.isLoading = false;
         this.totalPosts = postData.postCount;
         this.posts = postData.posts;
+      });
+    this.userIsAuthenticated = this.authService.getIsAuthenticated();
+    this.authStatusSub = this.authService
+      .getAuthStatusListener()
+      .subscribe(isAuthenticated => {
+        console.log("User Is Authenticated in post-list " + isAuthenticated);
+        this.userIsAuthenticated = isAuthenticated;
       });
   }
 
@@ -52,7 +67,15 @@ export class PostListComponent implements OnInit, OnDestroy {
     });
   }
 
+  routeToCreatePost() {
+    this.router.navigate(["/create"]);
+  }
+  onLogout() {
+    this.authService.logOut();
+  }
+
   ngOnDestroy() {
     this.postsSub.unsubscribe();
+    this.authStatusSub.unsubscribe();
   }
 }

@@ -1,3 +1,6 @@
+<mat-toolbar color="primary">
+  <a mat-button routerLink="/login" routerLinkActive="mat-accent">login</a>
+</mat-toolbar>
 <mat-card>
   <mat-spinner *ngIf="isLoading"></mat-spinner>
   <form (submit)="onSignUp(signUpForm)" #signUpForm="ngForm">
