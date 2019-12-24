@@ -53,15 +53,16 @@ router.post("/login", (req, res, next) => {
           expiresIn: "1h" //1 hour
         }
       );
-      console.log(jwt);
+      //console.log(jwt);
       res.status(200).json({
         token: token,
         message: "logged in",
-        expiresIn: 3600
+        expiresIn: 3600,
+        userId: fetchedUser._id
       });
     })
     .catch(err => {
-      console.log(err);
+      //console.log(err);
       return res.status(405).json({ message: "invalid credential" });
     });
 });
