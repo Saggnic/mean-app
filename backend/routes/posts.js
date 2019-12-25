@@ -43,15 +43,22 @@ router.post(
       imagePath: url + "/images/" + req.file.filename,
       creator: req.userData.userId //we have added the userId in the req while chechAuth execution after verification of token
     });
-    post.save().then(createdPost => {
-      res.status(201).json({
-        message: "Post added successfully",
-        post: {
-          ...createdPost,
-          id: createdPost._id
-        }
+    post
+      .save()
+      .then(createdPost => {
+        res.status(201).json({
+          message: "Post added successfully",
+          post: {
+            ...createdPost,
+            id: createdPost._id
+          }
+        });
+      })
+      .catch(error => {
+        res.status(500).json({
+          message: "Could not save Post"
+        });
       });
-    });
   }
 );
 
@@ -73,17 +80,20 @@ router.put(
       creator: req.userData.userId
     });
     //console.log(post);
-    Post.updateOne(
-      { _id: req.params.id, creator: req.userData.userId },
-      post
-    ).then(result => {
-      if (result.nModified > 0) {
-        //indicating atleast 1 row should have been modified in db, to prove successful update
-        res.status(200).json({ message: "Update successful!" });
-      } else {
-        res.status(401).json({ message: "Not Authorized to edit" });
-      }
-    });
+    Post.updateOne({ _id: req.params.id, creator: req.userData.userId }, post)
+      .then(result => {
+        if (result.nModified > 0) {
+          //indicating atleast 1 row should have been modified in db, to prove successful update
+          res.status(200).json({ message: "Update successful!" });
+        } else {
+          res.status(401).json({ message: "Not Authorized to edit" });
+        }
+      })
+      .catch(error => {
+        res.status(500).json({
+          message: "Could not update Post"
+        });
+      });
   }
 );
 
@@ -106,6 +116,11 @@ router.get("", (req, res, next) => {
         posts: fetchedPosts,
         maxPosts: count
       });
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: "Could not get Post"
+      });
     });
 });
 
@@ -120,8 +135,8 @@ router.get("/:id", (req, res, next) => {
 });
 
 router.delete("/:id", checkAuth, (req, res, next) => {
-  Post.deleteOne({ _id: req.params.id, creator: req.userData.userId }).then(
-    result => {
+  Post.deleteOne({ _id: req.params.id, creator: req.userData.userId })
+    .then(result => {
       if (result.n > 0) {
         //same logic as nModified...but for delete there is no nModified field
         //console.log(result);
@@ -129,8 +144,12 @@ router.delete("/:id", checkAuth, (req, res, next) => {
       } else {
         res.status(401).json({ message: "Not Authorized to delete" });
       }
-    }
-  );
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: "could not delete Post"
+      });
+    });
 });
 
 module.exports = router;

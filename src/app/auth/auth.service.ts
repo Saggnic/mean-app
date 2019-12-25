@@ -20,9 +20,14 @@ export class AuthService {
     this.http.post("http://localhost:3000/api/user/signup", authData).subscribe(
       response => {
         console.log(response);
+        this.router.navigate(["/login"]);
       },
       err => {
-        console.log(err);
+        //console.log(err);
+        this.authStatusListener.next(false);
+        //console.log(err);
+        //alert("Something went wrong");
+        this.router.navigate(["/signUp"]);
       }
     );
   }
@@ -35,23 +40,29 @@ export class AuthService {
         "http://localhost:3000/api/user/login",
         authData
       )
-      .subscribe(response => {
-        console.log(response);
-        this.token = response.token;
-        if (this.token) {
-          const expiresinDuration = response.expiresIn;
-          this.setAuthTimer(expiresinDuration);
-          this.isAuthenticated = true;
-          this.userId = response.userId;
-          this.authStatusListener.next(true);
-          const now = new Date();
-          const expirationDate = new Date(
-            now.getTime() + expiresinDuration * 1000
-          );
-          this.saveAuthData(this.token, expirationDate, this.userId);
-          this.router.navigate(["/posts"]);
+      .subscribe(
+        response => {
+          console.log(response);
+          this.token = response.token;
+          if (this.token) {
+            const expiresinDuration = response.expiresIn;
+            this.setAuthTimer(expiresinDuration);
+            this.isAuthenticated = true;
+            this.userId = response.userId;
+            this.authStatusListener.next(true);
+            const now = new Date();
+            const expirationDate = new Date(
+              now.getTime() + expiresinDuration * 1000
+            );
+            this.saveAuthData(this.token, expirationDate, this.userId);
+            this.router.navigate(["/posts"]);
+          }
+        },
+        err => {
+          //alert("Invalid Credential");
+          this.authStatusListener.next(false); //so the spinner will stop spinning
         }
-      });
+      );
   }
 
   //if local storage has the info of login, then re-authorize that user

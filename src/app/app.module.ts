@@ -10,7 +10,9 @@ import {
   MatToolbarModule,
   MatExpansionModule,
   MatProgressSpinnerModule,
-  MatPaginatorModule
+  MatPaginatorModule,
+  MatDialog,
+  MatDialogModule
 } from "@angular/material";
 
 import { AppComponent } from "./app.component";
@@ -21,6 +23,8 @@ import { AppRoutingModule } from "./app-routing.module";
 import { LoginComponentComponent } from "./auth/login/login-component/login-component.component";
 import { SignupComponent } from "./auth/signup/signup.component";
 import { AuthInterceptors } from "./auth/auth-interceptor";
+import { ErrorInterceptor } from "./error-interceptor";
+import { ErrorComponent } from "./error/error.component";
 
 @NgModule({
   declarations: [
@@ -29,7 +33,8 @@ import { AuthInterceptors } from "./auth/auth-interceptor";
     HeaderComponent,
     PostListComponent,
     LoginComponentComponent,
-    SignupComponent
+    SignupComponent,
+    ErrorComponent
   ],
   imports: [
     BrowserModule,
@@ -44,11 +49,14 @@ import { AuthInterceptors } from "./auth/auth-interceptor";
     MatProgressSpinnerModule,
     MatPaginatorModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    MatDialogModule
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptors, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptors, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ErrorComponent] //this module is going to get created eventually and dynamically only when error occurs
 })
 export class AppModule {}
