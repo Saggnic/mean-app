@@ -48,7 +48,7 @@ router.post("/login", (req, res, next) => {
       //if the password matches and all goes well then create the JWT
       const token = jwt.sign(
         { email: fetchedUser.email, userId: fetchedUser._id },
-        "long_secret_key_of_your_choice",
+        process.env.JWT_KEY, //we have defined the key in nodemon.json for picking the value during runtime.
         {
           expiresIn: "1h" //1 hour
         }

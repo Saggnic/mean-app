@@ -82,9 +82,16 @@ router.put(
     //console.log(post);
     Post.updateOne({ _id: req.params.id, creator: req.userData.userId }, post)
       .then(result => {
-        if (result.nModified > 0) {
-          //indicating atleast 1 row should have been modified in db, to prove successful update
-          res.status(200).json({ message: "Update successful!" });
+        if (result.n > 0) {
+          //indicating atleast 1 row should have been found in db, to prove successful update
+          if (result.nModified > 0) {
+            //indicating atleast something has been modified and user is not resaving same post.
+            res.status(200).json({ message: "Update successful!" });
+          } else {
+            res
+              .status(401)
+              .json({ message: "Please modify something to update..." });
+          }
         } else {
           res.status(401).json({ message: "Not Authorized to edit" });
         }
@@ -138,7 +145,7 @@ router.delete("/:id", checkAuth, (req, res, next) => {
   Post.deleteOne({ _id: req.params.id, creator: req.userData.userId })
     .then(result => {
       if (result.n > 0) {
-        //same logic as nModified...but for delete there is no nModified field
+        //same logic as above
         //console.log(result);
         res.status(200).json({ message: "Post deleted!" });
       } else {

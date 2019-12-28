@@ -8,7 +8,7 @@ module.exports = (req, res, next) => {
     //the token is of form : "Bearer kkhkjcsmdvn" ,so we split into array and only consider the array and not the 'Bearer
     const token = req.headers.authorization.split(" ")[1];
 
-    const decodedToken = jwt.verify(token, "long_secret_key_of_your_choice"); //same secret key as used in server to create
+    const decodedToken = jwt.verify(token, process.env.JWT_KEY); //same secret key as used in server to create
     req.userData = { email: decodedToken.email, userId: decodedToken.userId };
     next(); //if jwt validation is successful then letting the execution continue
   } catch (e) {
